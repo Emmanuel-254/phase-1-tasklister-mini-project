@@ -1,30 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const taskForm = document.getElementById('create-task-form');
-	const taskList = document.getElementById('tasks');
+	const tasksList = document.getElementById('tasks');
 
-	taskForm.addEventListener('submit', function (event) {
-		event.preventDefault();
-
-		const newTaskDescription = document.getElementById(
+	taskForm.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const taskDescription = document.getElementById(
 			'new-task-description'
 		).value;
-
-		if (newTaskDescription.trim() !== '') {
-			const taskItem = document.createElement('li');
-			taskItem.textContent = newTaskDescription;
-
-			const deleteButton = document.createElement('button');
-			deleteButton.textContent = 'Delete';
-			deleteButton.style.marginLeft = '10px';
-			deleteButton.addEventListener('click', function () {
-				taskItem.remove();
-			});
-
-			taskItem.appendChild(deleteButton);
-
-			taskList.appendChild(taskItem);
-
-			taskForm.reset();
-		}
+		const priority = document.getElementById('priority').value;
+		addTask(taskDescription, priority);
+		taskForm.reset();
 	});
+
+	function addTask(description, priority) {
+		const li = document.createElement('li');
+		li.textContent = description;
+		li.classList.add(priority); //
+
+		const deleteButton = document.createElement('button');
+		deleteButton.textContent = 'Delete';
+		deleteButton.onclick = () => {
+			li.remove();
+		};
+
+		const editButton = document.createElement('button');
+		editButton.textContent = 'Edit';
+		editButton.onclick = () => {
+			editTask(li);
+		};
+
+		li.appendChild(deleteButton);
+		li.appendChild(editButton);
+		tasksList.appendChild(li);
+
+		if (priority === 'high') {
+			li.style.color = 'red';
+		} else if (priority === 'medium') {
+			li.style.color = 'yellow';
+		} else {
+			li.style.color = 'green';
+		}
+	}
+
+	function editTask(li) {
+		const newDescription = prompt('Edit task:', li.firstChild.textContent);
+		if (newDescription) {
+			li.firstChild.textContent = newDescription;
+		}
+	}
 });
